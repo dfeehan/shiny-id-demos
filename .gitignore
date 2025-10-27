@@ -1,0 +1,30 @@
+# R specific
+.Rhistory
+.RData
+.Rproj.user
+*.Rproj
+*.Rhistory
+
+# MacOS
+.DS_Store
+
+# Shiny
+rsconnect/
+shiny-log.txt
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Log files
+*.log
+
+# Environment variables
+.env
+.Renviron
+
+# Package files
+*.tar.gz
+!*_R_*.tar.gz
+
