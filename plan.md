@@ -12,17 +12,19 @@ The SIR model divides a population into three compartments:
 
 ### Mathematical Model
 
-The SIR model is defined by the following differential equations:
+The SIR model is defined by the following differential equations (in terms of population fractions):
 
-- `dS/dt = -β × S × I / N`
-- `dI/dt = β × S × I / N - γ × I`
+- `dS/dt = -β × S × I`
+- `dI/dt = β × S × I - γ × I`
 - `dR/dt = γ × I`
 
 Where:
-- β (beta) = transmission rate (rate of infection)
+- S, I, R = fractions of the population in each compartment (S + I + R = 1)
+- β (beta) = transmission rate (rate of infection per susceptible per infected)
 - γ (gamma) = recovery rate
-- N = total population (S + I + R, constant)
 - R₀ (R-naught) = β/γ = basic reproduction number
+
+Note: This parameterization eliminates the need for total population size N, making the model more general.
 
 ## App Structure
 
@@ -38,11 +40,11 @@ Where:
 - **Main Panel**: Visualizations and results
 
 ### Input Controls (Sidebar)
-1. **Population Parameters**
-   - `N` (Total population): Slider, default 10,000, range 100-1,000,000
-   - `S0` (Initial Susceptible): Slider, default 9,990
-   - `I0` (Initial Infected): Slider, default 10
-   - `R0` (Initial Recovered): Slider, default 0 (or calculated)
+1. **Population Parameters (Fractions)**
+   - `S0` (Initial Susceptible fraction): Slider, default 0.999, range 0-1, step 0.001
+   - `I0` (Initial Infected fraction): Slider, default 0.001, range 0-1, step 0.0001
+   - `R0` (Initial Recovered fraction): Slider, default 0, range 0-1, step 0.001
+   - Validation: Ensure S₀ + I₀ + R₀ = 1 (auto-adjust or warn)
 
 2. **Disease Parameters**
    - `beta` (Transmission rate): Slider, default 0.3, range 0.01-1.0
@@ -61,9 +63,9 @@ Where:
 ### Output (Main Panel)
 1. **Tab 1: Time Series Plot**
    - Line plot showing S, I, R over time
-   - Y-axis: Number of people
+   - Y-axis: Fraction (proportion) of population (0 to 1)
    - X-axis: Time (days)
-   - Interactive tooltips on hover
+   - Interactive tooltips on hover showing exact proportions
    - Option to download plot
 
 2. **Tab 2: Phase Plot**
@@ -72,11 +74,11 @@ Where:
    - Useful for understanding epidemic dynamics
 
 3. **Tab 3: Statistics**
-   - Peak infected count
-   - Time to peak
-   - Final recovered count
-   - Epidemic duration (when I < threshold)
-   - Total cases (peak infected + final recovered)
+   - Peak infected fraction (max proportion infected)
+   - Time to peak (days)
+   - Final recovered fraction
+   - Epidemic duration (when I < threshold, e.g., I < 0.001)
+   - Total infected fraction (final recovered fraction)
 
 4. **Tab 4: Model Parameters Summary**
    - Current parameter values
@@ -91,8 +93,9 @@ Where:
 ```r
 sir_model <- function(t, state, parameters) {
   with(as.list(c(state, parameters)), {
-    dS <- -beta * S * I / N
-    dI <- beta * S * I / N - gamma * I
+    # S, I, R are fractions (proportions) of population
+    dS <- -beta * S * I
+    dI <- beta * S * I - gamma * I
     dR <- gamma * I
     list(c(dS, dI, dR))
   })
@@ -101,14 +104,17 @@ sir_model <- function(t, state, parameters) {
 
 2. **Simulation Function**
 - Use `deSolve::ode()` to solve differential equations
-- Returns data frame with time, S, I, R columns
-- Handle edge cases (prevent negative populations)
+- Initialize state with S₀, I₀, R₀ as fractions (proportions between 0 and 1)
+- Ensure initial conditions sum to 1
+- Returns data frame with time, S, I, R columns (all as fractions)
+- Handle edge cases (prevent negative fractions, ensure S + I + R ≈ 1)
+- Normalize results if needed to maintain S + I + R = 1
 
 3. **Statistics Calculation**
-- Peak infected: `max(I)`
-- Time to peak: `which.max(I)`
-- Final recovered: `R[nrow(results)]`
-- Epidemic duration: Find where `I < 1`
+   - Peak infected fraction: `max(I)` (as proportion)
+   - Time to peak: Find index of `max(I)`, convert to time
+   - Final recovered fraction: `R[nrow(results)]` (as proportion)
+   - Epidemic duration: Find where `I < threshold` (e.g., 0.001 = 0.1% threshold)
 
 4. **Visualization**
 - Use `ggplot2` for plots
@@ -171,15 +177,18 @@ sir_model <- function(t, state, parameters) {
 ### Edge Cases to Handle
 - R₀ < 1 (disease dies out quickly)
 - Very high R₀ values (rapid spread)
-- Initial conditions where S₀ + I₀ + R₀ ≠ N
-- Negative values in calculations
-- Division by zero scenarios
+- Initial conditions where S₀ + I₀ + R₀ ≠ 1 (not summing to unity)
+- Ensure S, I, R stay within [0, 1] bounds at all times
+- Negative values in calculations (prevent negative rates)
+- Numerical instability for very small fractions
+- Check conservation: S + I + R should remain approximately equal to 1
 
 ### Educational Enhancements
 - Add tooltips explaining each parameter
 - Include "Classic Epidemics" preset buttons (e.g., COVID-19, Flu)
 - Add information panel explaining SIR model concepts
-- Consider including herd immunity threshold visualization
+- Consider including herd immunity threshold visualization (1 - 1/R₀)
+- Explain benefits of fraction-based parameterization (scale-independent)
 
 ## Future Enhancements (Optional)
 1. SIRS model (waning immunity)
