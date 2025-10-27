@@ -24,7 +24,7 @@ ui <- fluidPage(
       sliderInput("I0", "Initial Infected (I₀):",
                   min = 0, max = 1, value = 0.01, step = 0.001),
       
-      verbatimTextOutput("sum_check", placeholder = TRUE),
+      #verbatimTextOutput("sum_check", placeholder = TRUE),
       
       hr(),
       
