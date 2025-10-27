@@ -6,7 +6,7 @@ library(dplyr)
 # Define UI
 ui <- fluidPage(
   
-  titlePanel("SIR Disease Model Simulator"),
+  titlePanel("SIR Model"),
   
   sidebarLayout(
     
@@ -26,7 +26,7 @@ ui <- fluidPage(
       sliderInput("R0", "Initial Recovered (R₀):",
                   min = 0, max = 1, value = 0, step = 0.001),
       
-      verbatimTextOutput("sum_check", placeholder = TRUE),
+      #verbatimTextOutput("sum_check", placeholder = TRUE),
       
       hr(),
       
