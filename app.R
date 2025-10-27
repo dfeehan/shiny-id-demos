@@ -130,7 +130,8 @@ server <- function(input, output, session) {
   # Display R0 (R-naught)
   output$R0_value <- renderText({
     r0 <- input$beta / input$gamma
-    paste0("R₀ = ", round(r0, 3))
+    #paste0("R₀ = ", round(r0, 3))
+    paste0("R0 = ", round(r0, 3))
   })
   
   # SIR Model Differential Equations
