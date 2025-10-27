@@ -48,7 +48,13 @@ ui <- fluidPage(
                   min = 50, max = 1000, value = 300, step = 10),
       
       numericInput("dt", "Time Step:",
-                   min = 0.01, max = 1, value = 0.1, step = 0.05)
+                   min = 0.01, max = 1, value = 0.1, step = 0.05),
+      
+      hr(),
+      
+      h4("Display Options"),
+      
+      checkboxInput("show_equilibrium", "Show equilibrium line", value = FALSE)
     ),
     
     # Main panel with outputs
@@ -60,8 +66,7 @@ ui <- fluidPage(
         tabPanel("Time Series",
           h3("Population Fractions Over Time"),
           plotOutput("timeSeriesPlot", height = "500px"),
-          helpText("Each compartment (S, I) is shown as a fraction of the total population."),
-          helpText("The horizontal line shows the endemic equilibrium (if R₀ > 1).")
+          helpText("Each compartment (S, I) is shown as a fraction of the total population.")
         ),
         
         tabPanel("Phase Plot",
@@ -227,8 +232,8 @@ server <- function(input, output, session) {
         axis.title = element_text(size = 12)
       )
     
-    # Add equilibrium line if R0 > 1
-    if (r0 > 1) {
+    # Add equilibrium line if R0 > 1 and checkbox is checked
+    if (r0 > 1 && input$show_equilibrium) {
       p <- p + geom_hline(yintercept = i_equilibrium, linetype = "dashed", color = "#A23B72", size = 1) +
         annotate("text", x = max(data$time) * 0.9, y = i_equilibrium + 0.03, 
                  label = paste0("Equilibrium: ", round(i_equilibrium, 3)), 
