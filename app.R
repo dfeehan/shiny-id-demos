@@ -212,10 +212,14 @@ server <- function(input, output, session) {
   output$phasePlot <- renderPlot({
     data <- simulation_data()
     
+    # Extract start and end points
+    start_point <- data.frame(S = data$S[1], I = data$I[1])
+    end_point <- data.frame(S = data$S[nrow(data)], I = data$I[nrow(data)])
+    
     ggplot(data, aes(x = S, y = I)) +
       geom_path(color = "#A23B72", size = 1.2) +
-      geom_point(aes(x = S[1], y = I[1]), color = "green", size = 3) +
-      geom_point(aes(x = S[n()], y = I[n()]), color = "red", size = 3) +
+      geom_point(data = start_point, aes(x = S, y = I), color = "green", size = 4, shape = 16) +
+      geom_point(data = end_point, aes(x = S, y = I), color = "red", size = 4, shape = 16) +
       labs(
         title = "S-I Phase Space Trajectory",
         x = "Susceptible Fraction",
