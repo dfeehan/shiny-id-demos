@@ -36,7 +36,7 @@ ui <- fluidPage(
                   min = 0.01, max = 1.0, value = 0.3, step = 0.01),
       
       sliderInput("gamma", "Recovery Rate (γ):",
-                  min = 0.01, max = 0.5, value = 0.1, step = 0.01),
+                  min = 0.01, max = 1.0, value = 0.1, step = 0.01),
       
       verbatimTextOutput("R0_value"),
       
