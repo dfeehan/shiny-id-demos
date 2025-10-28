@@ -1,8 +1,11 @@
-library(shiny)
-library(deSolve)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
+# Check and install required packages if needed
+packages <- c("shiny", "deSolve", "ggplot2", "dplyr", "tidyr")
+for (pkg in packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg)
+    library(pkg, character.only = TRUE)
+  }
+}
 
 # Define UI
 ui <- fluidPage(
