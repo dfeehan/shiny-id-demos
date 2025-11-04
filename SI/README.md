@@ -10,7 +10,7 @@ The SI model is a simplified epidemiological model that divides a population int
 
 ## Model Details
 
-The app uses a **fraction-based parameterization**, where all population compartments are represented as proportions (0 to 1) rather than absolute counts. This makes the model scale-independent and applicable to populations of any size.
+The app parameterizes the model with compartments that represent proportions (0 to 1) rather than absolute counts. 
 
 ### Differential Equations
 
@@ -20,7 +20,6 @@ The app uses a **fraction-based parameterization**, where all population compart
 Where:
 - S, I are fractions of the population (S + I = 1)
 - β (beta) = transmission rate
-- No recovery term (γ = 0 permanently)
 
 Key insight: In the SI model, **everyone eventually gets infected** if β > 0, since there is no recovery and no immunity.
 
@@ -32,20 +31,6 @@ Key insight: In the SI model, **everyone eventually gets infected** if β > 0, s
 - Certain chronic diseases
 - Infections in closed populations with very slow recovery
 - Pedagogical purposes (simpler model to learn)
-
-### Use SIR Model for:
-- Diseases with recovery and immunity
-- Realistic long-term epidemic dynamics
-- Modeling actual outbreaks where people recover
-- Planning vaccination campaigns
-
-## Features
-
-- **Interactive Controls**: Adjust all model parameters in real-time
-- **Time Series Plot**: Visualize how S and I evolve over time
-- **Phase Plot**: Explore the S-I trajectory in phase space
-- **Statistics**: View infection milestones (50%, 90%, 99% infected)
-- **Model Info**: Access equations and parameter documentation
 
 ## Installation
 
